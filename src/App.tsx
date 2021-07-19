@@ -12,7 +12,7 @@ function App() {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: '#f4511e',
+            backgroundColor: '#4361e7',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
