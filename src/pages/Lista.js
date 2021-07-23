@@ -23,6 +23,7 @@ const Lista = () => {
     'fffff',
     'ggggg',
   ]);
+  // const [tarefas, setTarefas] = useState([]);
   const [tarefa, setTarefa] = useState('');
   const [pesquisa, setPesquisa] = useState('');
 
@@ -108,6 +109,13 @@ const Lista = () => {
           keyExtractor={item => item.toString()}
           showsVerticalScrollIndicator={true}
           style={styles.FlatList}
+          ListEmptyComponent={() => {
+            return (
+              <View style={{flex: 1}}>
+                <Text>Nenhuma tarefa cadastrada!!!</Text>
+              </View>
+            );
+          }}
           renderItem={({item}) => (
             <View style={styles.ContainerView}>
               <ItemTarefa
@@ -139,7 +147,7 @@ const Lista = () => {
         <TouchableOpacity
           style={styles.ButtonAdd}
           onPress={() => adicionaTarefa()}>
-          <Icon name="add-circle" size={28} color="#2a1bff" />
+          <Icon name="add-circle" size={48} color="#2a1bff" />
         </TouchableOpacity>
       </View>
     </View>
@@ -149,17 +157,12 @@ const Lista = () => {
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
     backgroundColor: '#FFF',
   },
   FormSearch: {
-    padding: 0,
-    height: 50,
-    justifyContent: 'center',
-    alignSelf: 'stretch',
+    padding: 10,
+    height: 60,
     flexDirection: 'row',
-    paddingBottom: 10,
     borderBottomWidth: 1,
     borderColor: '#CCC',
   },
@@ -169,7 +172,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
     borderBottomLeftRadius: 5,
     borderTopLeftRadius: 5,
-    paddingHorizontal: 5,
     borderWidth: 1,
     borderColor: '#eee',
   },
@@ -185,18 +187,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
   FormAdd: {
-    padding: 0,
-    height: 40,
-    justifyContent: 'center',
-    alignSelf: 'stretch',
-    flexDirection: 'row',
     paddingTop: 10,
+    paddingLeft: 10,
+    height: 60,
+    flexDirection: 'row',
     borderTopWidth: 1,
     borderColor: '#CCC',
   },
   InputAdd: {
     flex: 1,
     height: 30,
+    top: 10,
     backgroundColor: '#eee',
     borderRadius: 5,
     paddingVertical: 5,
@@ -205,21 +206,20 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
   },
   ButtonAdd: {
-    height: 30,
-    width: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginLeft: 10,
+    top: -5,
   },
   BodyList: {
     flex: 1,
   },
   FlatList: {
     marginTop: 10,
+    marginBottom: 10,
   },
   ContainerView: {
     marginBottom: 10,
     marginRight: 10,
+    marginLeft: 10,
     paddingTop: 2,
     paddingBottom: 2,
     minHeight: 30,
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
   Texto: {
-    // fontSize: 16,
+    fontSize: 16,
   },
 });
 

@@ -1,8 +1,8 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {
   createStackNavigator,
-  HeaderBackButton,
   HeaderStyleInterpolators,
+  TransitionPresets,
   TransitionSpecs,
 } from '@react-navigation/stack';
 import * as React from 'react';
@@ -12,18 +12,11 @@ import Detalhe from './pages/Detalhe';
 const Stack = createStackNavigator();
 
 function App() {
-  const MyTransition = {
-    gestureDirection: 'horizontal',
-    transitionSpec: {
-      open: TransitionSpecs.TransitionIOSSpec,
-      close: TransitionSpecs.TransitionIOSSpec,
-    },
-    headerStyleInterpolator: HeaderStyleInterpolators.forFade,
-  };
   return (
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
+          initialRouteName: 'Lista',
           headerStyle: {
             backgroundColor: '#4361e7',
           },
@@ -35,22 +28,16 @@ function App() {
         <Stack.Screen
           name="Lista"
           component={Lista}
-          options={{title: 'Lista de Tarefas'}}
+          options={{
+            title: 'Lista de Tarefas',
+          }}
         />
         <Stack.Screen
           name="Detalhe"
           component={Detalhe}
-          options={({navigation, route}) => ({
+          options={({route}) => ({
             title: route.params?.name,
-            ...MyTransition,
-            // headerLeft: () => (
-            //   <HeaderBackButton
-            //     onPress={() => {
-            //       alert('Tarefa atualizada!');
-            //       navigation.goBack();
-            //     }}
-            //   />
-            // ),
+            ...TransitionPresets.SlideFromRightIOS,
           })}
         />
       </Stack.Navigator>

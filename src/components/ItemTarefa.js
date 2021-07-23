@@ -49,8 +49,13 @@ const ItemTarefa = props => {
 
   return (
     <View style={styles.Container}>
-      <TouchableWithoutFeedback style={styles.CheckboxIcon} onPress={onCheck}>
-        <MaterialIcons name={iconsName[iconName]} size={30} color="#4F8EF7" />
+      <TouchableWithoutFeedback onPress={onCheck}>
+        <MaterialIcons
+          style={styles.CheckboxIcon}
+          name={iconsName[iconName]}
+          size={30}
+          color="#4F8EF7"
+        />
       </TouchableWithoutFeedback>
       <TouchableOpacity style={styles.TextContainer} onPress={onPress}>
         <View>
@@ -71,7 +76,6 @@ const ItemTarefa = props => {
             ]}>
             {props.text}
           </Text>
-          {/* <Text style={props.style}>{props.text}</Text> */}
         </View>
       </TouchableOpacity>
       <TouchableOpacity onPress={onDelete}>
@@ -92,14 +96,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   CheckboxIcon: {
-    height: 20,
+    paddingRight: 10,
   },
   TextContainer: {
     flex: 1,
   },
   DeleteIcon: {
-    width: 20,
-    marginTop: 4,
+    paddingLeft: 10,
+    marginTop: 2,
   },
 });
 
