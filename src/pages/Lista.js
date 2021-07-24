@@ -13,24 +13,33 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ItemTarefa from '../components/ItemTarefa';
 
+const Tarefa = function (id, titulo, concluido, temSubTarefa) {
+  return {id, titulo, concluido, temSubTarefa};
+};
+
 const Lista = () => {
-  const [tarefas, setTarefas] = useState([
-    'Compras: Supermercado Condor',
-    'Lista de Compras',
-    'Marcar Dentista',
+  const navigation = useNavigation();
+
+  let tarefa1 = Tarefa(1, 'Compras: Supermercado Condor', 0, false);
+  let tarefa2 = Tarefa(2, 'Lista de Compras', 0, false);
+  let tarefa3 = Tarefa(3, 'Marcar Dentista', 0, false);
+  let tarefa4 = Tarefa(
+    4,
     'Baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    'Bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb ',
-    'Bcccc',
-    'ddddd',
-    'eeeee',
-    'fffff',
-    'ggggg',
+    1,
+    false,
+  );
+  const [listaTarefas, setListaTarefas] = useState([
+    tarefa1,
+    tarefa2,
+    tarefa3,
+    tarefa4,
   ]);
   // const [tarefas, setTarefas] = useState([]);
-  const [tarefa, setTarefa] = useState('');
-  const [pesquisa, setPesquisa] = useState('');
+  const [tarefaAtual, setTarefaAtual] = useState({});
+  const [textoPesquisa, setTextoPesquisa] = useState('');
 
-  async function adicionaTarefa() {
+  async function adicionarTarefa() {
     // const search = tarefa.filter(tarefa => tarefa === novaTarefa);
 
     // if (search.length !== 0) {
@@ -38,8 +47,8 @@ const Lista = () => {
     //   return;
     // }
 
-    setTarefas([...tarefas, tarefa]);
-    setTarefa('');
+    setListaTarefas([...listaTarefas, tarefaAtual]);
+    setTarefaAtual({});
 
     Keyboard.dismiss();
   }
@@ -59,7 +68,9 @@ const Lista = () => {
         {
           text: 'Sim',
           onPress: () =>
-            setTarefas(tarefas.filter(tarefas => tarefas !== item)),
+            setListaTarefas(
+              listaTarefas.filter(itemListaTarefa => itemListaTarefa !== item),
+            ),
         },
       ],
       {cancelable: false},
@@ -71,7 +82,7 @@ const Lista = () => {
   }
 
   async function pesquisaTarefa(item) {
-    setPesquisa('');
+    setTextoPesquisa('');
   }
 
   useEffect(() => {
@@ -89,8 +100,8 @@ const Lista = () => {
       // AsyncStorage.setItem('task', JSON.stringify(task));
     }
     salvarTarefas();
-  }, [tarefas]);
-  const navigation = useNavigation();
+  }, [listaTarefas]);
+
   return (
     <View style={styles.Container}>
       <View style={styles.FormSearch}>
@@ -98,11 +109,11 @@ const Lista = () => {
           style={styles.InputSearch}
           placeholderTextColor="#999"
           autoCorrect={false}
-          value={pesquisa}
+          value={textoPesquisa}
           placeholder="Procurar"
           maxLength={300}
           inlineImageLeft="search_icon"
-          onChangeText={texto => setPesquisa(texto)}
+          onChangeText={texto => setTextoPesquisa(texto)}
         />
         <TouchableOpacity
           style={styles.ButtonSearch}
@@ -112,13 +123,13 @@ const Lista = () => {
       </View>
       <View style={styles.BodyList}>
         <FlatList
-          data={tarefas}
-          keyExtractor={item => item.toString()}
+          data={listaTarefas}
+          keyExtractor={item => item.id}
           showsVerticalScrollIndicator={true}
           style={styles.FlatList}
           ListEmptyComponent={() => {
             return (
-              <View style={{flex: 1}}>
+              <View style={styles.BodyEmptyList}>
                 <Text>Nenhuma tarefa cadastrada!!!</Text>
               </View>
             );
@@ -128,12 +139,15 @@ const Lista = () => {
               <ItemTarefa
                 style={styles.Texto}
                 //state={1}
-                text={item}
+                text={item.titulo}
                 //enableIndeterminate={true}
                 onCheck={() => concluirTarefa(item)}
                 onPress={() =>
                   navigation.navigate('Detalhe', {
-                    name: item.length > 20 ? item.substr(0, 20) + '...' : item,
+                    name:
+                      item.titulo.length > 20
+                        ? item.titulo.substr(0, 20) + '...'
+                        : item.titulo,
                   })
                 }
                 onDelete={() => apagarTarefa(item)}
@@ -144,18 +158,18 @@ const Lista = () => {
       </View>
 
       <View style={styles.FormAdd}>
-        <TextInput
+        {/* <TextInput
           style={styles.InputAdd}
           placeholderTextColor="#999"
           autoCorrect={true}
-          value={tarefa}
+          value={tarefaAtual}
           placeholder="Adicione uma tarefa"
           maxLength={300}
-          onChangeText={text => setTarefa(text)}
-        />
+          onChangeText={text => setTarefaAtual(text)}
+        /> */}
         <TouchableOpacity
           style={styles.ButtonAdd}
-          onPress={() => adicionaTarefa()}>
+          onPress={() => adicionarTarefa()}>
           <Icon name="add-circle" size={48} color="#2a1bff" />
         </TouchableOpacity>
       </View>
@@ -199,7 +213,8 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingLeft: 10,
     height: 60,
-    flexDirection: 'row',
+    // flexDirection: 'row',
+    flexDirection: 'row-reverse',
     borderTopWidth: 1,
     borderColor: '#CCC',
   },
@@ -221,6 +236,10 @@ const styles = StyleSheet.create({
   BodyList: {
     flex: 1,
   },
+  BodyEmptyList: {
+    flex: 1,
+    paddingLeft: 10,
+  },
   FlatList: {
     marginTop: 10,
     marginBottom: 10,
@@ -240,7 +259,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
   Texto: {
-    //fontSize: 16,
+    // fontSize: 16,
   },
 });
 
