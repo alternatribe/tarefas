@@ -15,6 +15,9 @@ import ItemTarefa from '../components/ItemTarefa';
 
 const Lista = () => {
   const [tarefas, setTarefas] = useState([
+    'Compras: Supermercado Condor',
+    'Lista de Compras',
+    'Marcar Dentista',
     'Baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     'Bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb ',
     'Bcccc',
@@ -67,6 +70,10 @@ const Lista = () => {
     //alert(item);
   }
 
+  async function pesquisaTarefa(item) {
+    setPesquisa('');
+  }
+
   useEffect(() => {
     async function obterTarefas() {
       // const task = await AsyncStorage.getItem('task');
@@ -99,7 +106,7 @@ const Lista = () => {
         />
         <TouchableOpacity
           style={styles.ButtonSearch}
-          onPress={() => adicionaTarefa()}>
+          onPress={() => pesquisaTarefa()}>
           <Icon name="search" size={20} color="#999" />
         </TouchableOpacity>
       </View>
@@ -125,7 +132,9 @@ const Lista = () => {
                 //enableIndeterminate={true}
                 onCheck={() => concluirTarefa(item)}
                 onPress={() =>
-                  navigation.navigate('Detalhe', {name: 'Tarefa 1'})
+                  navigation.navigate('Detalhe', {
+                    name: item.length > 20 ? item.substr(0, 20) + '...' : item,
+                  })
                 }
                 onDelete={() => apagarTarefa(item)}
               />
@@ -231,7 +240,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
   Texto: {
-    fontSize: 16,
+    //fontSize: 16,
   },
 });
 
