@@ -31,7 +31,7 @@ function App() {
           name="Detalhe"
           component={Detalhe}
           options={({route}) => ({
-            title: route.params?.name,
+            title: route.params?.titulo,
             ...TransitionPresets.SlideFromRightIOS,
           })}
         />

@@ -12,12 +12,12 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import ItemTarefa from '../components/ItemTarefa';
 
-const Tarefa = function (id, titulo, concluido, temSubTarefa) {
-  return {id, titulo, concluido, temSubTarefa};
+const Tarefa = function (id, titulo, concluido) {
+  return {id, titulo, concluido};
 };
 
 const Lista = props => {
-  console.log(props);
+  //console.log(props);
 
   const [listaTarefas, setListaTarefas] = useState([]);
   const [tarefaAtual, setTarefaAtual] = useState({});
@@ -25,17 +25,13 @@ const Lista = props => {
   const [idMaximo, setIdMaximo] = useState(0);
 
   async function adicionarTarefa() {
-    // const search = tarefa.filter(tarefa => tarefa === novaTarefa);
-
-    // if (search.length !== 0) {
-    //   Alert.alert('Atenção', 'Nome da tarefa repetido!');
-    //   return;
-    // }
-    console.log(idMaximo);
+    if (!tarefaAtual.titulo) {
+      alert('É necessário informar o título da tarefa...');
+      return;
+    }
     if (!tarefaAtual.id || tarefaAtual.id === 0) {
       tarefaAtual.id = idMaximo + 1;
     }
-    console.log(tarefaAtual);
     setListaTarefas([...listaTarefas, tarefaAtual]);
     setTarefaAtual({});
     setIdMaximo(idMaximo + 1);
@@ -140,12 +136,12 @@ const Lista = props => {
                 style={styles.Texto}
                 state={item.concluido}
                 text={item.titulo}
-                enableIndeterminate={item.temSubTarefa}
+                //enableIndeterminate={item.temSubTarefa}
                 onCheck={() => concluirTarefa(item)}
                 onPress={() =>
                   props.navigation.navigate('Detalhe', {
                     id: item.id,
-                    name:
+                    titulo:
                       item.titulo.length > 20
                         ? item.titulo.substr(0, 20) + '...'
                         : item.titulo,

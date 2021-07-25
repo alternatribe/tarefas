@@ -1,5 +1,6 @@
 {
   "cSpell.words": [
+    "",
     "Adicione",
     "Aten",
     "Atenção",
@@ -20,6 +21,7 @@
     "Texto",
     "adiciona",
     "adicionar",
+    "anotacao",
     "apagar",
     "cadastrada",
     "certeza",
@@ -32,6 +34,18 @@
     "obter",
     "repetido",
     "salvar",
+    "subtarefas",
+    "teste",
     "titulo"
-  ]
+  ],
+  "cSpell.enableFiletypes": [
+    "!csharp",
+    "!go",
+    "!php",
+    "!plaintext",
+    "!typescript",
+    "!typescriptreact",
+    "!yml"
+  ],
+  "cSpell.language": "en"
 }
