@@ -1,10 +1,5 @@
 import {NavigationContainer} from '@react-navigation/native';
-import {
-  createStackNavigator,
-  HeaderStyleInterpolators,
-  TransitionPresets,
-  TransitionSpecs,
-} from '@react-navigation/stack';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import * as React from 'react';
 import Lista from './pages/Lista';
 import Detalhe from './pages/Detalhe';

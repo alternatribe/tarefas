@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ItemTarefa from '../components/ItemTarefa';
 
@@ -17,27 +16,13 @@ const Tarefa = function (id, titulo, concluido, temSubTarefa) {
   return {id, titulo, concluido, temSubTarefa};
 };
 
-const Lista = () => {
-  const navigation = useNavigation();
+const Lista = props => {
+  console.log(props);
 
-  let tarefa1 = Tarefa(1, 'Compras: Supermercado Condor', 0, false);
-  let tarefa2 = Tarefa(2, 'Lista de Compras', 0, false);
-  let tarefa3 = Tarefa(3, 'Marcar Dentista', 0, false);
-  let tarefa4 = Tarefa(
-    4,
-    'Baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    1,
-    false,
-  );
-  const [listaTarefas, setListaTarefas] = useState([
-    tarefa1,
-    tarefa2,
-    tarefa3,
-    tarefa4,
-  ]);
-  // const [tarefas, setTarefas] = useState([]);
+  const [listaTarefas, setListaTarefas] = useState([]);
   const [tarefaAtual, setTarefaAtual] = useState({});
   const [textoPesquisa, setTextoPesquisa] = useState('');
+  const [idMaximo, setIdMaximo] = useState(0);
 
   async function adicionarTarefa() {
     // const search = tarefa.filter(tarefa => tarefa === novaTarefa);
@@ -46,9 +31,14 @@ const Lista = () => {
     //   Alert.alert('Atenção', 'Nome da tarefa repetido!');
     //   return;
     // }
-
+    console.log(idMaximo);
+    if (!tarefaAtual.id || tarefaAtual.id === 0) {
+      tarefaAtual.id = idMaximo + 1;
+    }
+    console.log(tarefaAtual);
     setListaTarefas([...listaTarefas, tarefaAtual]);
     setTarefaAtual({});
+    setIdMaximo(idMaximo + 1);
 
     Keyboard.dismiss();
   }
@@ -83,16 +73,26 @@ const Lista = () => {
 
   async function pesquisaTarefa(item) {
     setTextoPesquisa('');
+    Keyboard.dismiss();
   }
 
   useEffect(() => {
+    let tarefa1 = Tarefa(1, 'Compras: Supermercado Condor', 0, false);
+    let tarefa2 = Tarefa(2, 'Lista de Compras', 0, false);
+    let tarefa3 = Tarefa(3, 'Marcar Dentista', 0, false);
+    let tarefa4 = Tarefa(4, 'abcd', 1, false);
     async function obterTarefas() {
+      //setListaTarefas([]);
+      setListaTarefas([...listaTarefas, tarefa1, tarefa2, tarefa3, tarefa4]);
+      setIdMaximo(4);
+
       // const task = await AsyncStorage.getItem('task');
       // if (task) {
       //   setTask(JSON.parse(task));
       // }
     }
     obterTarefas();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -138,12 +138,13 @@ const Lista = () => {
             <View style={styles.ContainerView}>
               <ItemTarefa
                 style={styles.Texto}
-                //state={1}
+                state={item.concluido}
                 text={item.titulo}
-                //enableIndeterminate={true}
+                enableIndeterminate={item.temSubTarefa}
                 onCheck={() => concluirTarefa(item)}
                 onPress={() =>
-                  navigation.navigate('Detalhe', {
+                  props.navigation.navigate('Detalhe', {
+                    id: item.id,
                     name:
                       item.titulo.length > 20
                         ? item.titulo.substr(0, 20) + '...'
@@ -158,15 +159,15 @@ const Lista = () => {
       </View>
 
       <View style={styles.FormAdd}>
-        {/* <TextInput
+        <TextInput
           style={styles.InputAdd}
           placeholderTextColor="#999"
           autoCorrect={true}
-          value={tarefaAtual}
+          value={tarefaAtual.titulo}
           placeholder="Adicione uma tarefa"
           maxLength={300}
-          onChangeText={text => setTarefaAtual(text)}
-        /> */}
+          onChangeText={titulo => setTarefaAtual({titulo})}
+        />
         <TouchableOpacity
           style={styles.ButtonAdd}
           onPress={() => adicionarTarefa()}>
@@ -213,8 +214,8 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingLeft: 10,
     height: 60,
-    // flexDirection: 'row',
-    flexDirection: 'row-reverse',
+    flexDirection: 'row',
+    // flexDirection: 'row-reverse',
     borderTopWidth: 1,
     borderColor: '#CCC',
   },

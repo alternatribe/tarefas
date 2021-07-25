@@ -1,9 +1,8 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 
-const Detalhe = () => {
-  const navigation = useNavigation();
+const Detalhe = props => {
+  console.log(props);
   return (
     <View
       style={{
