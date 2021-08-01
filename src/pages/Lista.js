@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React, {useState, useEffect} from 'react';
 import {
   Alert,
@@ -55,7 +56,7 @@ const Lista = props => {
   }
 
   async function concluirTarefa(item, value) {
-    const tarefa = JSON.parse(JSON.stringify(item));
+    const tarefa = Storage.getObject(item);
     tarefa.concluido = value;
     await Storage.add(tarefa);
   }

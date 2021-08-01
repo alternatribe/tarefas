@@ -8,6 +8,10 @@ function open() {
   });
 }
 
+function getObject(tarefa) {
+  return Realm.Object.prototype.toJSON.call(tarefa);
+}
+
 async function getAll(param) {
   const db = await open();
   const tarefas = db.objects('Tarefa').sorted('titulo');
@@ -49,6 +53,7 @@ async function removeAll() {
 }
 
 const Storage = {
+  getObject,
   getAll,
   add,
   remove,
