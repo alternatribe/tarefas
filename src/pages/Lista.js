@@ -17,33 +17,20 @@ const Lista = props => {
   const [listaTarefas, setListaTarefas] = useState([]);
   const [tarefaInput, setTarefaInput] = useState({});
   const [textoPesquisa, setTextoPesquisa] = useState('');
+  const [isFiltered, setFiltered] = useState(false);
 
-  async function adicionarTarefa(tarefa) {
-    if (!tarefa.titulo) {
+  async function adicionarTarefa() {
+    if (!tarefaInput.titulo) {
       alert('É necessário informar o título da tarefa...');
       return;
     }
-
-    const db = await Storage();
-    db.write(() => {
-      if (!tarefa.id || tarefa.id === 0) {
-        let tarefaMax = {id: 0};
-        const tarefas = db.objects('Tarefa');
-        if (tarefas.length > 0) {
-          tarefaMax = tarefas.reduce((idPrev, idCurrent) => {
-            return idPrev.id > idCurrent.id ? idPrev : idCurrent;
-          });
-        }
-        tarefa.id = tarefaMax.id + 1;
-      }
-      db.create('Tarefa', tarefa, 'modified');
-    });
+    Storage.add(tarefaInput);
+    setListaTarefas(await Storage.getAll());
     setTarefaInput({});
     Keyboard.dismiss();
   }
 
   async function apagarTarefa(item) {
-    const db = await Storage();
     Alert.alert(
       'Apagar a Tarefa',
       'Tem certeza que deseja apagar esta tarefa?',
@@ -57,11 +44,9 @@ const Lista = props => {
         },
         {
           text: 'Sim',
-          onPress: () => {
-            db.write(() => {
-              db.delete(item);
-            });
-            obterTarefas();
+          onPress: async () => {
+            await Storage.remove(item);
+            setListaTarefas(await Storage.getAll());
           },
         },
       ],
@@ -73,26 +58,21 @@ const Lista = props => {
     //alert(item);
   }
 
-  async function pesquisaTarefa(item) {
-    setTextoPesquisa('');
+  async function pesquisaTarefa() {
+    if (textoPesquisa.length > 0) {
+      setFiltered(true);
+    } else {
+      setFiltered(false);
+    }
+    setListaTarefas(await Storage.getAll(textoPesquisa));
     Keyboard.dismiss();
   }
 
-  async function obterTarefas() {
-    const db = await Storage();
-    const tarefas = db.objects('Tarefa').sorted('titulo');
-    setListaTarefas(tarefas);
-  }
-
   useEffect(() => {
-    async function obterTarefasInicializacao() {
-      // const db = await Storage();
-      // db.write(() => {
-      //   db.deleteAll();
-      // });
-      obterTarefas();
+    async function obterTarefas() {
+      setListaTarefas(await Storage.getAll());
     }
-    obterTarefasInicializacao();
+    obterTarefas();
   }, []);
 
   return (
@@ -121,9 +101,13 @@ const Lista = props => {
           showsVerticalScrollIndicator={true}
           style={styles.FlatList}
           ListEmptyComponent={() => {
+            let txt = 'Nenhuma tarefa cadastrada!!!';
+            if (isFiltered) {
+              txt = 'Tarefa pesquisada não encontrada!!!';
+            }
             return (
               <View style={styles.BodyEmptyList}>
-                <Text>Nenhuma tarefa cadastrada!!!</Text>
+                <Text>{txt}</Text>
               </View>
             );
           }}
