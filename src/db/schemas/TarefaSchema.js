@@ -5,8 +5,8 @@ class TarefaSchema {
     properties: {
       id: {type: 'int', indexed: true},
       titulo: 'string',
-      concluido: 'int',
-      anotacao: 'string',
+      concluido: {type: 'int', default: 0},
+      anotacao: 'string?',
     },
   };
 }

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Alert,
   FlatList,
@@ -11,64 +11,39 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ItemTarefa from '../components/ItemTarefa';
-import storage from '../db/storage';
+import Storage from '../db/Storage';
 
 const Lista = props => {
   const [listaTarefas, setListaTarefas] = useState([]);
   const [tarefaInput, setTarefaInput] = useState({});
   const [textoPesquisa, setTextoPesquisa] = useState('');
-  const [ultimoId, setUltimoId] = useState(0);
 
   async function adicionarTarefa(tarefa) {
-    // console.log('1', tarefa);
     if (!tarefa.titulo) {
       alert('É necessário informar o título da tarefa...');
       return;
     }
 
-    // if (!tarefa.id || tarefa.id === 0) {
-    //   if (tarefas.length > 0) {
-    //     let id = tarefas.reduce((idMaximo, tarefa) => {
-    //       return idMaximo > tarefa.id ? idMaximo : tarefa.id;
-    //     });
-    //     if (id > 0) {
-    //       setUltimoId(id);
-    //     }
-    //   }
-    //   tarefa.id = ultimoId + 1;
-    // }
-
-    if (!tarefa.concluido) {
-      tarefa.concluido = 0;
-    }
-
-    if (!tarefa.anotacao) {
-      tarefa.anotacao = '';
-    }
-
-    // console.log('---> ', tarefa);
-    const db = await storage();
+    const db = await Storage();
     db.write(() => {
       if (!tarefa.id || tarefa.id === 0) {
-        let id = 0;
-        const tarefas = db.objects('Tarefa').sorted('titulo', true);
+        let tarefaMax = {id: 0};
+        const tarefas = db.objects('Tarefa');
         if (tarefas.length > 0) {
-          id = tarefas.reduce((idMaximo, tarefaSeguinte) => {
-            return idMaximo > tarefaSeguinte.id ? idMaximo : tarefaSeguinte.id;
+          tarefaMax = tarefas.reduce((idPrev, idCurrent) => {
+            return idPrev.id > idCurrent.id ? idPrev : idCurrent;
           });
         }
-        tarefa.id = id + 1;
+        tarefa.id = tarefaMax.id + 1;
       }
-      db.create('Tarefa', tarefa);
+      db.create('Tarefa', tarefa, 'modified');
     });
-    //setListaTarefas([...listaTarefas, tarefa]);
-    //setTarefaInput({});
-    //setUltimoId(ultimoId + 1);
+    setTarefaInput({});
     Keyboard.dismiss();
   }
 
   async function apagarTarefa(item) {
-    const db = await storage();
+    const db = await Storage();
     Alert.alert(
       'Apagar a Tarefa',
       'Tem certeza que deseja apagar esta tarefa?',
@@ -108,18 +83,12 @@ const Lista = props => {
 
   useEffect(() => {
     async function obterTarefas() {
-      const db = await storage();
-      // db.deleteAll();
-      const tarefas = db.objects('Tarefa').sorted('titulo', true);
+      const db = await Storage();
+      // db.write(() => {
+      //   db.deleteAll();
+      // });
+      const tarefas = db.objects('Tarefa').sorted('titulo');
       setListaTarefas(tarefas);
-      // if (tarefas.length > 0) {
-      //   let id = tarefas.reduce((idMaximo, tarefa) => {
-      //     return idMaximo > tarefa.id ? idMaximo : tarefa.id;
-      //   });
-      //   if (id > 0) {
-      //     setUltimoId(id);
-      //   }
-      // }
     }
     obterTarefas();
     // eslint-disable-next-line react-hooks/exhaustive-deps
