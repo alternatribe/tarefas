@@ -123,13 +123,7 @@ const Lista = props => {
                 //enableIndeterminate={item.temSubTarefa}
                 onCheck={value => concluirTarefa(item, value)}
                 onPress={() =>
-                  props.navigation.navigate('Detalhe', {
-                    id: item.id,
-                    titulo:
-                      item.titulo.length > 20
-                        ? item.titulo.substr(0, 20) + '...'
-                        : item.titulo,
-                  })
+                  props.navigation.navigate('Detalhe', Storage.getObject(item))
                 }
                 onDelete={() => apagarTarefa(item)}
               />

@@ -1,20 +1,17 @@
 import React, {useState, useEffect} from 'react';
 import {Text, View} from 'react-native';
 
-const Tarefa = function (id, titulo, anotacao, subtarefas, concluido) {
-  return {id, titulo, anotacao, subtarefas, concluido};
-};
-
 const Detalhe = props => {
-  const [tarefa, setTarefa] = useState(Tarefa());
+  const [tarefa, setTarefa] = useState({});
   useEffect(() => {
     async function obterTarefa() {
-      setTarefa(Tarefa(1, 'teste', 0));
+      setTarefa(props.route.params);
     }
     obterTarefa();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log('-----> ', props.route.params.titulo);
+  console.log('-----> ', props.route.params);
   console.log('***--> ', tarefa);
   return (
     <View>
