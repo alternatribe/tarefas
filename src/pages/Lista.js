@@ -24,7 +24,7 @@ const Lista = props => {
       alert('É necessário informar o título da tarefa...');
       return;
     }
-    Storage.add(tarefaInput);
+    await Storage.add(tarefaInput);
     setListaTarefas(await Storage.getAll());
     setTarefaInput({});
     Keyboard.dismiss();
@@ -54,8 +54,10 @@ const Lista = props => {
     );
   }
 
-  async function concluirTarefa(item) {
-    //alert(item);
+  async function concluirTarefa(item, value) {
+    const tarefa = JSON.parse(JSON.stringify(item));
+    tarefa.concluido = value;
+    await Storage.add(tarefa);
   }
 
   async function pesquisaTarefa() {
@@ -118,7 +120,7 @@ const Lista = props => {
                 state={item.concluido}
                 text={item.titulo}
                 //enableIndeterminate={item.temSubTarefa}
-                onCheck={() => concluirTarefa(item)}
+                onCheck={value => concluirTarefa(item, value)}
                 onPress={() =>
                   props.navigation.navigate('Detalhe', {
                     id: item.id,

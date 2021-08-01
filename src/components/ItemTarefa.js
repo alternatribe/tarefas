@@ -21,18 +21,24 @@ const ItemTarefa = props => {
   const [iconName, setIconName] = useState(props.state);
 
   const onCheck = () => {
-    if (props.onCheck) {
-      props.onCheck();
-    }
     if (iconName === iconsName.length - 1) {
       setIconName(0);
+      if (props.onCheck) {
+        props.onCheck(0);
+      }
       return;
     }
     if (props.enableIndeterminate === false && iconName === 1) {
       setIconName(0);
+      if (props.onCheck) {
+        props.onCheck(0);
+      }
       return;
     }
     setIconName(iconName + 1);
+    if (props.onCheck) {
+      props.onCheck(iconName + 1);
+    }
   };
 
   const onPress = () => {
