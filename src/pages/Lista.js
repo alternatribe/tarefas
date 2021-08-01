@@ -61,10 +61,7 @@ const Lista = props => {
             db.write(() => {
               db.delete(item);
             });
-
-            // setListaTarefas(
-            //   listaTarefas.filter(itemListaTarefa => itemListaTarefa !== item),
-            // );
+            obterTarefas();
           },
         },
       ],
@@ -81,17 +78,21 @@ const Lista = props => {
     Keyboard.dismiss();
   }
 
+  async function obterTarefas() {
+    const db = await Storage();
+    const tarefas = db.objects('Tarefa').sorted('titulo');
+    setListaTarefas(tarefas);
+  }
+
   useEffect(() => {
-    async function obterTarefas() {
-      const db = await Storage();
+    async function obterTarefasInicializacao() {
+      // const db = await Storage();
       // db.write(() => {
       //   db.deleteAll();
       // });
-      const tarefas = db.objects('Tarefa').sorted('titulo');
-      setListaTarefas(tarefas);
+      obterTarefas();
     }
-    obterTarefas();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    obterTarefasInicializacao();
   }, []);
 
   return (
