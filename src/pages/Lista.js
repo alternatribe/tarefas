@@ -28,6 +28,7 @@ const Lista = props => {
     await Storage.add(tarefaInput);
     setListaTarefas(await Storage.getAll());
     setTarefaInput({});
+    setTextoPesquisa('');
     Keyboard.dismiss();
   }
 
