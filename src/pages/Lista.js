@@ -72,6 +72,12 @@ const Lista = props => {
   }
 
   useEffect(() => {
+    props.navigation.addListener('focus', async () =>
+      setListaTarefas(await Storage.getAll(textoPesquisa)),
+    );
+  }, [listaTarefas, props.navigation, textoPesquisa]);
+
+  useEffect(() => {
     async function obterTarefas() {
       setListaTarefas(await Storage.getAll());
     }
@@ -85,10 +91,11 @@ const Lista = props => {
           style={styles.InputSearch}
           placeholderTextColor="#999"
           autoCorrect={false}
+          autoCapitalize={'none'}
+          autoCompleteType={'off'}
           value={textoPesquisa}
           placeholder="Procurar"
           maxLength={300}
-          inlineImageLeft="search_icon"
           onChangeText={texto => setTextoPesquisa(texto)}
         />
         <TouchableOpacity
@@ -120,10 +127,15 @@ const Lista = props => {
                 style={styles.Texto}
                 state={item.concluido}
                 text={item.titulo}
-                //enableIndeterminate={item.temSubTarefa}
                 onCheck={value => concluirTarefa(item, value)}
                 onPress={() =>
-                  props.navigation.navigate('Detalhe', Storage.getObject(item))
+                  props.navigation.navigate('Detalhe', {
+                    tarefa: Storage.getObject(item),
+                    titulo:
+                      item.titulo.length > 20
+                        ? item.titulo.substr(0, 20) + '...'
+                        : item.titulo,
+                  })
                 }
                 onDelete={() => apagarTarefa(item)}
               />
@@ -136,7 +148,9 @@ const Lista = props => {
         <TextInput
           style={styles.InputAdd}
           placeholderTextColor="#999"
-          autoCorrect={true}
+          autoCorrect={false}
+          autoCapitalize={'none'}
+          autoCompleteType={'off'}
           value={tarefaInput.titulo}
           placeholder="Adicione uma tarefa"
           maxLength={300}

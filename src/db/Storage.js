@@ -4,11 +4,16 @@ import TarefaSchema from './schemas/TarefaSchema';
 function open() {
   return Realm.open({
     schema: [TarefaSchema],
-    schemaVersion: 4,
+    schemaVersion: 5,
   });
 }
 
 function getObject(tarefa) {
+  const isDebuggingEnabled = typeof atob !== 'undefined';
+  //const isDebuggingEnabled = typeof DedicatedWorkerGlobalScope !== 'undefined';
+  if (isDebuggingEnabled) {
+    return JSON.parse(JSON.stringify(tarefa));
+  }
   return Realm.Object.prototype.toJSON.call(tarefa);
 }
 
